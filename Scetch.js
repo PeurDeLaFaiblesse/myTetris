@@ -1,9 +1,14 @@
 'use strict';
+
 let game;
+
 const BLOCK_SIZE = 35;
 const gameWidthBlocks = 10;
 const gameHeightBlocks = 20;
+
 let paused = false;
+let shapeFallRate = 3; // number of fallse per second;
+
 let horizontalMoveEveryXFrames = 2;// the speed the blocks move when the left or right key is down
 let horizontalMoveCounter = 0;
 let verticalMoveEveryXFrames = 1;// the speed the blocks move when the left or right key is down
@@ -30,7 +35,9 @@ let downKeyIsDown = false;
 let replayingMove = false;
 
 function checkInput() {
-    game.moveShapeDown(replayingMove);
+    if (frameCount % int(33 / shapeFallRate) === 0) {
+        game.moveShapeDown();
+    }
 
     if (leftKeyIsDown || rightKeyIsDown) {
         if (horizontalMoveCounter >= horizontalMoveEveryXFrames) {
@@ -70,9 +77,9 @@ function keyPressed() {
     if (key === 'C') {
         game.holdShape();
     }
-    if (key === ' ') {
-        paused = !paused;
-    }
+    // if (key === ' ') {
+    //     paused = !paused;
+    // }
     // if (key === 'A') {
     //     ai.getMove(game.currentShape, game.heldShape, game.nextShape, game.deadBlocksMatrix);
     // }
