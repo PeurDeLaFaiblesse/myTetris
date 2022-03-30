@@ -54,7 +54,8 @@ class Game {
 
             this.currentShape = this.nextShape;
             this.nextShape = this.shapeGenerator.getNewRandomShape(createVector(int(this.gameWidth / 2), 0),this);
-            this.needsNewMovementPlan =true;
+            // this.needsNewMovementPlan =true;
+            ai.movementPlan = null;
 
             //if the new block is stuck then the game resets
             if (!this.currentShape.canMoveInDirection(0, 0) || this.score > 500) {

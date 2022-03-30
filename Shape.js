@@ -17,6 +17,20 @@ class Shape {
         this.moveHistory = new MoveHistory();
     }
 
+    clone() {
+        
+        let clone = new Shape(this.shapeId, this.startingPos, this.game);
+        clone.currentPos = this.currentPos.copy();
+        clone.blocks = [];
+        for (let block of this.blocks) {
+            clone.blocks.push(block.clone());
+        }
+        clone.isDead = this.isDead;
+        clone.currentRotationCount = this.currentRotationCount;
+        clone.moveHistory = this.moveHistory.clone();
+        return clone;
+    }
+
     draw() {
         push();
         translate(this.currentPos.x * BLOCK_SIZE, this.currentPos.y * BLOCK_SIZE);

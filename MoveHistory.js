@@ -30,11 +30,11 @@ class MoveHistory{
         }
     }
 
-    // clone(){
-    //     let clone = new MoveHistory();
-    //     for(let i = 0 ; i < this.moveHistoryList.length;i++){
-    //         clone.moveHistoryList.push(""+ this.moveHistoryList[i]);
-    //     }
-    //     return clone;
-    // }
+    clone(){
+        let clone = new MoveHistory();
+        for(let i = 0 ; i < this.moveHistoryList.length;i++){
+            clone.moveHistoryList.push(""+ this.moveHistoryList[i]);
+        }
+        return clone;
+    }
 }

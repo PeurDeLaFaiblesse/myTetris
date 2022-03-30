@@ -8,6 +8,13 @@ class Block {
         this.isDead = false;
     }
 
+    clone() {
+        let clone = new Block(this.startingGridPos.copy(), this.color);
+        clone.currentGridPos = this.currentGridPos.copy();
+        clone.isDead = this.isDead;
+        return clone;
+    }
+
     draw(tetrised = false, linesToBeCleared = []){
         if(this.isDead)
             return;
