@@ -1,45 +1,46 @@
 'use strict';
 
 class AI {
-    constructor() {
+    constructor(brain) {
         this.gameWidth = game.gameWidth;
         this.gameHeight = game.gameHeight;
         this.movementPlan = new MoveHistory();
+        this.brain = brain;
     }
 
     //Main function
     //Given the state of the matrix returns a string of instructions to get the block into position.
-    calculateMovementPlan(currentShape_, heldShape_, nextShape_, blockMatrix_) {
+    // // // // calculateMovementPlan(currentShape_, heldShape_, nextShape_, blockMatrix_) {
 
-        //clone all the input so we dont fuck it up
-        let currentShape = currentShape_.clone();
-        let heldShape = heldShape_ ? heldShape_.clone() : null;
-        let nextShape = nextShape_ ? nextShape_.clone() : null;
-
-
-        let blockMatrix = new BlockMatrix(this.gameWidth, this.gameHeight);
-        blockMatrix.copyFromMatrix(blockMatrix_);
-
-        let bestEndPositionForCurrentShape = this.getBestEndPosition(currentShape, blockMatrix);
-
-        //check held piece and see if thats better
-
-        //if there is no held shape then check the next shape instead
-        let bestEndPositionForHeld = heldShape == null ? this.getBestEndPosition(nextShape, blockMatrix) : this.getBestEndPosition(heldShape, blockMatrix);
+    // // // //     //clone all the input so we dont fuck it up
+    // // // //     let currentShape = currentShape_.clone();
+    // // // //     let heldShape = heldShape_ ? heldShape_.clone() : null;
+    // // // //     let nextShape = nextShape_ ? nextShape_.clone() : null;
 
 
-        //choose the piece with the best shape cost
-        if (bestEndPositionForCurrentShape.shapeCost <= bestEndPositionForHeld.shapeCost) {
-            this.chosenEndPosition = bestEndPositionForCurrentShape.bestShape;
-        } else {
-            this.chosenEndPosition = bestEndPositionForHeld.bestShape;
-            this.chosenEndPosition.moveHistory.unshift("hold");
-        }
+    // // // //     let blockMatrix = new BlockMatrix(this.gameWidth, this.gameHeight);
+    // // // //     blockMatrix.copyFromMatrix(blockMatrix_);
+
+    // // // //     let bestEndPositionForCurrentShape = this.getBestEndPosition(currentShape, blockMatrix);
+
+    // // // //     //check held piece and see if thats better
+
+    // // // //     //if there is no held shape then check the next shape instead
+    // // // //     let bestEndPositionForHeld = heldShape == null ? this.getBestEndPosition(nextShape, blockMatrix) : this.getBestEndPosition(heldShape, blockMatrix);
 
 
-        this.movementPlan = this.chosenEndPosition.moveHistory;
+    // // // //     //choose the piece with the best shape cost
+    // // // //     if (bestEndPositionForCurrentShape.shapeCost <= bestEndPositionForHeld.shapeCost) {
+    // // // //         this.chosenEndPosition = bestEndPositionForCurrentShape.bestShape;
+    // // // //     } else {
+    // // // //         this.chosenEndPosition = bestEndPositionForHeld.bestShape;
+    // // // //         this.chosenEndPosition.moveHistory.unshift("hold");
+    // // // //     }
 
-    }
+
+    // // // //     this.movementPlan = this.chosenEndPosition.moveHistory;
+
+    // // // // }
 
     //ok so this ones going to look at the next shape to see what were working with
     calculateMovementPlan2(currentShape_, heldShape_, nextShape_, blockMatrix_) {
@@ -364,7 +365,7 @@ class AI {
             newMatrix.calculateMaximumLineHeight();
             newMatrix.countNumberOfBlocksInRightmostLane();
             newMatrix.calculateBumpiness();
-            newMatrix.calculateCost();
+            newMatrix.calculateCost(this.brain);
 
             //add the shapes movement history to the matrix so we know how to reach this matrix
             newMatrix.addMovementHistory(shape.moveHistory);

@@ -3,6 +3,10 @@
 let game;
 let ai;
 
+let nextBrain;
+let batchSize = 4;
+let currentBatchNumber = 1;
+
 const BLOCK_SIZE = 35;
 const gameWidthBlocks = 10;
 const gameHeightBlocks = 20;
@@ -19,7 +23,7 @@ function setup() {
     window.canvas = createCanvas(800, 800);
     window.canvas.parent('canvas');
     game = new Game(gameWidthBlocks, gameHeightBlocks);
-    ai = new AI();
+    ai = new AI(new Brain(true));
     ai.calculateMovementPlan2(game.currentShape, game.heldShape, game.nextShape, game.deadBlocksMatrix);
     frameRate(30);
 }
@@ -28,10 +32,21 @@ function draw() {
     background(100);
 
     game.draw();
-
+    ai.brain.writeMultipliers(600,300);
     writeCurrentMatrixStats();
     checkInput();
 
+    update();
+}
+
+let leftKeyIsDown = false;
+let upKeyIsDown = false;
+let rightKeyIsDown = false;
+let downKeyIsDown = false;
+
+let replayingMove = false;
+
+function update() {
     for (let i = 0; i < 1; i++) {
         // move the shape down at a rate of (shape Fall Rate) drops per second
         if (!paused && frameCount % int(30 / shapeFallRate) === 0) {
@@ -69,13 +84,6 @@ function draw() {
         }
     }
 }
-
-let leftKeyIsDown = false;
-let upKeyIsDown = false;
-let rightKeyIsDown = false;
-let downKeyIsDown = false;
-
-let replayingMove = false;
 
 function checkInput() {
     
@@ -160,9 +168,9 @@ function keyPressed() {
     if (key === 'C') {
         game.holdShape();
     }
-    // if (key === ' ') {
-    //     paused = !paused;
-    // }
+    if (key === ' ') {
+        paused = !paused;
+    }
     // if (key === 'A') {
     //     ai.getMove(game.currentShape, game.heldShape, game.nextShape, game.deadBlocksMatrix);
     // }

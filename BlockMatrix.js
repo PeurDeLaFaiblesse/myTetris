@@ -309,7 +309,13 @@ class BlockMatrix {
 
 
     //assumes a shape has been added, the lines have been cleared, the holes are counted and the pillars are counted
-    calculateCost() {
+    calculateCost(brain) {
+
+        if (brain) {
+            this.cost = brain.getCostOfMatrix(this);
+            return;
+        }
+
         let holeCountMultiplier = 100;
         let openHoleCountMultiplier = 70;
 

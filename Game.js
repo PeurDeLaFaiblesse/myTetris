@@ -60,6 +60,10 @@ class Game {
             //if the new block is stuck then the game resets
             if (!this.currentShape.canMoveInDirection(0, 0) || this.score > 500) {
                 // this.isDead = true;
+                if (currentBatchNumber !== batchSize) {
+                    currentBatchNumber++;
+                    console.log(this.getTetrisRate());
+                }
                 this.resetGame();
             }
         }
@@ -70,6 +74,7 @@ class Game {
     }
 
     resetGame() {
+        ai = new AI(new Brain(false));
         this.resetBlocksMatrix();
         this.deadBlocks = [];
         this.currentShape = this.shapeGenerator.getNewRandomShape(createVector(int(this.gameWidth / 2), 0),this);
