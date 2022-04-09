@@ -4,6 +4,7 @@ let game;
 let ai;
 let player;
 let population;
+let populationSize = 54;
 
 const BLOCK_SIZE = 35;
 const GameWidthBlocks = 10;
@@ -17,6 +18,12 @@ let horizontalMoveCounter = 0;
 let verticalMoveEveryXFrames = 1;// the speed the blocks move when the left or right key is down
 let verticalMoveCounter = 0;
 
+let font;
+
+function preload() {
+    font = loadFont("tetris font/Square.ttf");
+}
+
 function setup() {
     window.canvas = createCanvas(800, 800);
     window.canvas.parent('canvas');
@@ -25,8 +32,9 @@ function setup() {
     // ai.calculateMovementPlan2(game.currentShape, game.heldShape, game.nextShape, game.deadBlocksMatrix);
     // // player = new Player();
     // // player.calculateMovementPlan();
-    population = new Population(8);
-    // frameRate(40);
+    population = new Population(populationSize);
+    textFont(font);
+    frameRate(15);
 }
 
 function draw() {
@@ -39,6 +47,7 @@ function draw() {
         population.show();
         population.update();
     }
+    
     // game.draw();
     // ai.brain.writeMultipliers(600,300);
     // // player.show();

@@ -38,8 +38,9 @@ class Player {
     show() {
         push();
         // translate(this.windowPosition.x, this.windowPosition.y);
-        // scale(this.windowWidth / canvas.width, this.windowHeight / canvas.height);
+        scale(this.windowWidth / canvas.width, this.windowHeight / canvas.height);
         this.currentGame.draw();
+        this.brain.writeMultipliers(600, 300);
         pop();
 
         
@@ -48,7 +49,7 @@ class Player {
     update() {
 
 
-        if(this.currentGame.justTetrised)
+        if(this.isDead || this.currentGame.justTetrised)
             return
         // move the shape down at a rate of (shape Fall Rate) drops per second
         if (this.currentGame.needsNewMovementPlan) {

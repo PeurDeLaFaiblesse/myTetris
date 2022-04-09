@@ -6,39 +6,71 @@ class Population {
         this.generation = 1;
         this.fitnessSum = 0;
         this.currentBatchNumber = 0;
+        this.batchSize = 9;
+        
+
+        this.playersPerRow = Math.ceil(Math.sqrt(this.batchSize));
+        this.playersPerColumn = Math.ceil(Math.sqrt(this.batchSize));
+
+        this.playerWidth = canvas.width / this.playersPerRow;
+        this.playerHeight = canvas.height / this.playersPerColumn;
+
         for (let i = 0; i < size; i++) {
             let player = new Player(i === 0);
+            player.windowWidth = this.playerWidth;
+            player.windowHeight = this.playerHeight;
             this.players.push(player);
         }
+        this.bestPlayer = this.players[0];
     }
 
     show() {
         push();
+        background(240);
 
-        push();
-        this.players[this.currentBatchNumber].show();
-        pop();
 
         textSize(30);
         fill(100);
         stroke(100);
         textAlign(CENTER,CENTER);
-        text("Gen: " + this.generation + "\t\t Batch: " + (this.currentBatchNumber +1) + "\t\tAverage Fitness: " + (this.fitnessSum/this.players.length).toFixed(2),canvas.width/2, 780 );
+        text("Gen: " + this.generation + "\t\t Batch: " + (this.currentBatchNumber +1) + "\t\tAverage Fitness: " + (this.fitnessSum/this.players.length).toFixed(2),canvas.width/2,25 );
 
-        this.players[this.currentBatchNumber].brain.writeMultipliers(600, 300);
-        if (this.bestPlayer) {     
-            textSize(20);       
-            text(`Best player multipliers:`, 110, 300);
-            this.bestPlayer.brain.writeMultipliers(15, 340)
-        }
+        translate(0, 50);
+        scale(1, (canvas.height - 50) / canvas.height);
+
+
+        let x = 0;
+        let y = 0;
+        let currentBatch = this.getCurrentBatchOfPlayers();
+        for (let i = 0; i < currentBatch.length; i++) {
+            push();
+            translate(x * this.playerWidth, y * this.playerHeight);
+            currentBatch[i].show();
+            x++;
+            if (x >= this.playersPerRow) {
+                x = 0;
+                y++;
+            }
+            pop();
+        }        
         pop();
+    }
 
-        
+    getCurrentBatchOfPlayers() {
+        let currentBatch = [];
+        for (let i = this.currentBatchNumber * this.batchSize; i < (this.currentBatchNumber + 1) * this.batchSize; i++) {
+            currentBatch.push(this.players[i]);
+        }
+        return currentBatch;
+
     }
 
     update() {
-        this.players[this.currentBatchNumber].update();
-        if (this.players[this.currentBatchNumber].isDead) {
+        let currentBatch = this.getCurrentBatchOfPlayers();
+        for (let i = 0; i < currentBatch.length; i++) {
+            currentBatch[i].update();
+        }
+        if (this.areAllPlayersInBatchDead()) {
             this.currentBatchNumber++;
         }
     }
@@ -105,6 +137,15 @@ class Population {
 
     areAllPlayersDead() {
         for (let player of this.players) {
+            if (!player.isDead) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    areAllPlayersInBatchDead() {
+        for (let player of this.getCurrentBatchOfPlayers()) {
             if (!player.isDead) {
                 return false;
             }
