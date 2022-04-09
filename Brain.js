@@ -2,7 +2,7 @@
 
 
 class Brain {
-    constructor(isFirst) {
+    constructor(isFirst = false) {
         this.multipliers = {};
         if (isFirst) {
             this.setAsMyMultipliers();
@@ -42,7 +42,7 @@ class Brain {
     }
 
     mutate() {
-        let mutateRate = 0.1;
+        let mutateRate = 0.2;
 
         this.multipliers.holeCountMultiplier *= random(1.0) < mutateRate ? random(0.95, 1.05) : 1;
         this.multipliers.openHoleCountMultiplier *= random(1.0) < mutateRate ? random(0.95, 1.05) : 1;
@@ -59,7 +59,7 @@ class Brain {
 
     clone() {
         let clone = new Brain();
-        clone.myMultipliers = Object.assign({}, this.myMultipliers);
+        clone.multipliers = Object.assign({}, this.multipliers);
         return clone;
     }
 

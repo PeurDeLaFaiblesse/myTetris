@@ -1,16 +1,17 @@
 'use strict';
 
 class Player {
-    constructor() {
-        this.brain = new Brain();
+    constructor(isFirst) {
+        this.brain = new Brain(isFirst);
         this.fitness = 0;
         this.score = 0;
         this.tetrisRate = 0;
-        this.currentGame = new Game(gameWidthBlocks, gameHeightBlocks);
+        this.currentGame = new Game(GameWidthBlocks, GameHeightBlocks);
         this.ai = new AI(this.currentGame.gameWidth, this.currentGame.gameHeight, this.brain);
         this.ai.calculateMovementPlan2(this.currentGame.currentShape, this.currentGame.heldShape, this.currentGame.nextShape, this.currentGame.deadBlocksMatrix);
         this.windowHeight = canvas.height / 2;
         this.windowWidth = canvas.width / 2;
+        this.isDead = false;
     }
 
     calculateMovementPlan(){
@@ -23,12 +24,12 @@ class Player {
     }
 
     calculateFitness(){
-        this.fitness = this.currentGame.score * (1+this.currentGame.tetrisRate);
+        this.fitness = this.currentGame.score * (1+this.currentGame.getTetrisRate());
     }
 
     clone(){
         let clone = new Player();
-        clone.game.needsNewMovementPlan = true;
+        clone.currentGame.needsNewMovementPlan = true;
         clone.brain = this.brain.clone();
         clone.ai.brain = clone.brain;
         return clone;
@@ -37,9 +38,11 @@ class Player {
     show() {
         push();
         // translate(this.windowPosition.x, this.windowPosition.y);
-        scale(this.windowWidth / canvas.width, this.windowHeight / canvas.height);
+        // scale(this.windowWidth / canvas.width, this.windowHeight / canvas.height);
         this.currentGame.draw();
         pop();
+
+        
     }
 
     update() {
@@ -83,5 +86,6 @@ class Player {
             default:
                 console.log('u r so stupid');
         }
+        this.isDead = this.currentGame.isDead;
     }
 }

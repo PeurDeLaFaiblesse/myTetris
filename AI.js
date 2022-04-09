@@ -1,9 +1,9 @@
 'use strict';
 
 class AI {
-    constructor(brain) {
-        this.gameWidth = game.gameWidth;
-        this.gameHeight = game.gameHeight;
+    constructor(gameWidth, gameHeight, brain) {
+        this.gameWidth = gameWidth;
+        this.gameHeight = gameHeight;
         this.movementPlan = new MoveHistory();
         this.brain = brain;
     }

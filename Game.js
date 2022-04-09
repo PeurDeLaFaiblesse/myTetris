@@ -54,17 +54,13 @@ class Game {
 
             this.currentShape = this.nextShape;
             this.nextShape = this.shapeGenerator.getNewRandomShape(createVector(int(this.gameWidth / 2), 0),this);
-            // this.needsNewMovementPlan =true;
-            ai.movementPlan = null;
+            this.needsNewMovementPlan =true;
+            // ai.movementPlan = null;
 
             //if the new block is stuck then the game resets
-            if (!this.currentShape.canMoveInDirection(0, 0) || this.score > 500) {
-                // this.isDead = true;
-                if (currentBatchNumber !== batchSize) {
-                    currentBatchNumber++;
-                    console.log(this.getTetrisRate());
-                }
-                this.resetGame();
+            if (!this.currentShape.canMoveInDirection(0, 0)) {
+                this.isDead = true;
+                // this.resetGame();
             }
         }
     }

@@ -2,14 +2,12 @@
 
 let game;
 let ai;
-
-let nextBrain;
-let batchSize = 4;
-let currentBatchNumber = 1;
+let player;
+let population;
 
 const BLOCK_SIZE = 35;
-const gameWidthBlocks = 10;
-const gameHeightBlocks = 20;
+const GameWidthBlocks = 10;
+const GameHeightBlocks = 20;
 
 let paused = false;
 let shapeFallRate = 30; // number of fallse per second;
@@ -22,21 +20,34 @@ let verticalMoveCounter = 0;
 function setup() {
     window.canvas = createCanvas(800, 800);
     window.canvas.parent('canvas');
-    game = new Game(gameWidthBlocks, gameHeightBlocks);
-    ai = new AI(new Brain(true));
-    ai.calculateMovementPlan2(game.currentShape, game.heldShape, game.nextShape, game.deadBlocksMatrix);
-    frameRate(30);
+    // game = new Game(GameWidthBlocks, GameHeightBlocks);
+    // ai = new AI(new Brain(true));
+    // ai.calculateMovementPlan2(game.currentShape, game.heldShape, game.nextShape, game.deadBlocksMatrix);
+    // // player = new Player();
+    // // player.calculateMovementPlan();
+    population = new Population(8);
+    // frameRate(40);
 }
 
 function draw() {
     background(100);
+    if (!population.areAllPlayersDead()) {
+        population.show();
+        if (!paused) population.update();
+    } else {
+        population.naturalSelection();
+        population.show();
+        population.update();
+    }
+    // game.draw();
+    // ai.brain.writeMultipliers(600,300);
+    // // player.show();
+    // // player.ai.brain.writeMultipliers(600, 300);
+    // writeCurrentMatrixStats();
+    // checkInput();
 
-    game.draw();
-    ai.brain.writeMultipliers(600,300);
-    writeCurrentMatrixStats();
-    checkInput();
+    // // player.update();
 
-    update();
 }
 
 let leftKeyIsDown = false;
@@ -45,45 +56,6 @@ let rightKeyIsDown = false;
 let downKeyIsDown = false;
 
 let replayingMove = false;
-
-function update() {
-    for (let i = 0; i < 1; i++) {
-        // move the shape down at a rate of (shape Fall Rate) drops per second
-        if (!paused && frameCount % int(30 / shapeFallRate) === 0) {
-            if(ai.movementPlan === null){
-                ai.calculateMovementPlan2(game.currentShape, game.heldShape, game.nextShape, game.deadBlocksMatrix);
-            }
-
-            let nextMove = ai.getNextMove();
-
-            switch (nextMove) {
-                case "ALL DOWN":
-                    let downMoveMultiplier = 2;
-                    while (ai.movementPlan.moveHistoryList.length > 0 && downMoveMultiplier > 0) {
-                        ai.movementPlan.moveHistoryList.splice(0, 1);
-                        game.moveShapeDown();
-                        downMoveMultiplier -= 1;
-                    }
-                    break;
-                case "HOLD":
-                    game.holdShape();
-                    break;
-                case "ROTATE":
-                    game.rotateShape();
-                    break;
-                case "RIGHT":
-                    game.moveShapeRight();
-                    break;
-                case "LEFT":
-                    game.moveShapeLeft();
-                    break;
-                case "DOWN":
-                    game.moveShapeDown();
-                    break;
-            }
-        }
-    }
-}
 
 function checkInput() {
     
@@ -105,9 +77,9 @@ function checkInput() {
 
 }
 function writeCurrentMatrixStats() {
-    let currentMatrix = new BlockMatrix(game.gameWidth, game.gameHeight);
+    let currentMatrix = new BlockMatrix(GameWidthBlocks, GameHeightBlocks);
 
-    currentMatrix.copyFromMatrix(game.deadBlocksMatrix);
+    currentMatrix.copyFromMatrix(player.currentGame.deadBlocksMatrix);
     currentMatrix.clearFullRows();
     currentMatrix.countHoles();
     currentMatrix.countPillars();
